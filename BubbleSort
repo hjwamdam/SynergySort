@@ -1,0 +1,50 @@
+# Program File: BubbleSort
+# Author: Henry Warmerdam
+# Purpose: Prompt the user for the maximum size of the array, and
+# then fill the array with random numbers. Sort the array using any sort you choose. This will
+# require the array be allocated in heap memory. Print out the array.
+
+Main:
+ # Prompt the user for the maximum size of the array
+ jal PromptInt
+ move $s0, $v0
+ 
+ # Allocate an integer array using the size from step 1
+ move $a0, $s0
+ li $a1, 4
+ jal AllocateArray
+ move $s1, $v0
+ 
+ # Fill the array with random numbers (for loop)
+ # use service 41 to generate random values
+ li $t0, 0
+ li $v0, 41
+ 
+ for:
+ bge $t0, $s0, endFor
+ 	syscall
+ 	
+ 	sll $t1, $t0, 2    # calculate address of element 1
+ 	add $t1, $t1, $s1
+ 	sw $a0, 0($t1)
+ 	
+ 	# Increment counter
+ 	addi $t0, $t0, 1
+ j for
+ endFor:
+ 
+ # Sort the array using BubbleSort
+ move $a0, $s1
+ move $a1, $s0
+ jal BubbleSort
+ 
+ # Print the array
+ move $a0, $s1
+ move $a1, $s0
+ jal PrintIntArrayForwards
+ jal PrintNewLine
+ 
+ # End the program
+ jal Exit
+ 
+.include "utils.asm"
